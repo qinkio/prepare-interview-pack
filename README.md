@@ -1,6 +1,6 @@
 # prepare-interview-pack
 
-一个面向真实求职场景的 Codex 面试准备 Skill。它会结合岗位 JD、个人简历、项目资产、面试时间和面试轮次，生成有证据、可直接开口练习的完整面试作战手册。
+一个面向真实求职场景、兼容 Codex 与 WorkBuddy 的面试准备 Skill。它会结合岗位 JD、个人简历、项目资产、面试时间和面试轮次，生成有证据、可直接开口练习的完整面试作战手册。
 
 它不只做 JD 摘要，而是从招聘方第一印象开始，识别岗位真正想验证的问题，再用候选人的真实项目证据生成自我介绍、项目故事、高概率问答、风险回答和临场复习计划。
 
@@ -17,8 +17,9 @@
 - 根据剩余时间自动切换 Sprint、Standard 或 Deep 模式。
 - 生成“临场作战卡＋完整手册”的双层文档。
 - 严格区分个人贡献、团队结果、事实、推断和待确认信息。
-- 支持 Markdown 输出和 Notion 发布流程。
+- 支持 Markdown 输出，并能按宿主现有连接器发布到 Notion、腾讯文档等服务。
 - 提供自动检查脚本，防止遗漏关键章节。
+- 自动探测宿主能力；缺少联网、发布连接器或 Python 时提供安全降级路径。
 
 ## 适合的场景
 
@@ -30,7 +31,7 @@
 
 不适合单独用于简历重写、求职信、Offer 评估、职位搜索或面试后感谢信。
 
-## 安装
+## 安装到 Codex
 
 ```bash
 git clone https://github.com/qinkio/prepare-interview-pack.git
@@ -39,6 +40,38 @@ cp -R prepare-interview-pack/prepare-interview-pack ~/.codex/skills/
 ```
 
 安装完成后，重新打开 Codex 或开始一个新任务，即可使用 `$prepare-interview-pack`。
+
+## 安装到 WorkBuddy
+
+WorkBuddy 支持上传本地技能包。最简单的方式是直接下载仓库中预先构建的技能包：
+
+[下载 prepare-interview-pack-workbuddy.zip](https://github.com/qinkio/prepare-interview-pack/raw/main/dist/prepare-interview-pack-workbuddy.zip)
+
+然后在 WorkBuddy 中执行：
+
+1. 打开左侧的“专家·技能·连接器”；
+2. 选择“添加技能”→“上传技能”；
+3. 上传 `prepare-interview-pack-workbuddy.zip`；
+4. 启用技能，新建对话并用自然语言描述面试准备任务。
+
+也可以安装为本地用户技能：
+
+```bash
+mkdir -p ~/.workbuddy/skills
+cp -R prepare-interview-pack/prepare-interview-pack ~/.workbuddy/skills/
+```
+
+WorkBuddy 不需要使用 `$prepare-interview-pack`。直接输入“结合这份 JD 和简历，生成完整面试手册”即可触发。若没有联网、文档连接器或 Python 执行能力，Skill 会保留核心分析与答案库，并改用人工核验和 Markdown 交付。
+
+### 重新构建 WorkBuddy 技能包
+
+仓库维护者修改 Skill 后可运行：
+
+```bash
+python3 tools/build_workbuddy_package.py
+```
+
+生成的 ZIP 以 `SKILL.md` 为包根目录，不包含 Codex 专属的 `agents/openai.yaml`。
 
 ## 使用方法
 
@@ -49,13 +82,20 @@ cp -R prepare-interview-pack/prepare-interview-pack ~/.codex/skills/
 3. 可选的项目资料或职业资产库；
 4. 面试时间；
 5. 面试轮次，例如 HR、业务主管、交叉面或终面；
-6. 希望输出到 Markdown 还是 Notion。
+6. 希望输出到 Markdown，还是发布到当前宿主已连接的文档服务。
 
 示例：
 
 ```text
 使用 $prepare-interview-pack，结合这份 JD、我的简历和项目资料，
 为明天下午的业务主管一面生成完整面试手册，并标注先背什么、后看什么。
+```
+
+在 WorkBuddy 中可直接说：
+
+```text
+结合这份 JD、我的简历和项目资料，为明天下午的业务主管一面生成完整面试手册，
+先做招聘方 10 秒扫描，再标注先背什么、后看什么；没有证据的内容不要编造。
 ```
 
 也可以继续进行模拟面试：
@@ -131,6 +171,10 @@ python3 prepare-interview-pack/scripts/validate_pack.py 面试手册.md --mode s
 ```text
 prepare-interview-pack/
 ├── README.md
+├── dist/
+│   └── prepare-interview-pack-workbuddy.zip
+├── tools/
+│   └── build_workbuddy_package.py
 └── prepare-interview-pack/
     ├── SKILL.md
     ├── agents/
@@ -160,6 +204,13 @@ prepare-interview-pack/
 - 选择了表达完整但与岗位不够直接的项目；
 - 风险警告过多，压过候选人的优势；
 - 文档分析正确，但无法直接开口练习；
-- Notion 发布后缺少回读检查。
+- 连接文档服务发布后缺少回读检查。
+
+## 跨平台说明
+
+- `SKILL.md`、`references/` 和 `scripts/` 是 Codex 与 WorkBuddy 共用的核心。
+- `agents/openai.yaml` 只为 Codex 提供界面元数据，不会被放入 WorkBuddy 上传包。
+- Skill 不依赖固定命令名、固定当前目录或某一种文档连接器。
+- WorkBuddy 第三方 Skill 会在用户授权范围内读取文件或执行脚本；首次使用建议先用脱敏材料测试，并检查包内脚本。
 
 欢迎根据自己的岗位和面试流程继续迭代。

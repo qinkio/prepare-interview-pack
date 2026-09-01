@@ -1,6 +1,6 @@
 ---
 name: prepare-interview-pack
-description: "Create an end-to-end, evidence-backed interview handbook and rehearsal plan from an active JD, resume, career assets, interview time, and interview round. Use for full interview preparation: recruiter first-impression screening, JD diagnosis, competency ranking, experience mapping, self-introductions, project stories, predicted questions, gap answers, memorization priorities, mock follow-ups, and Notion or Markdown publication. Do not use for resume rewriting, cover letters, offer evaluation, job discovery, or post-interview messages; use the relevant job-search skill for those tasks."
+description: "Create an end-to-end, evidence-backed interview handbook and rehearsal plan from a JD, resume, career assets, interview time, and interview round. Use when users ask for 面试准备、JD拆解、面试手册、自我介绍、高频问题、项目故事、模拟面试, recruiter screening, competency ranking, experience mapping, gap answers, memorization priorities, or document publication. Do not use for standalone resume rewriting, cover letters, offer evaluation, job discovery, or post-interview messages."
 ---
 
 # Prepare Interview Pack
@@ -9,7 +9,7 @@ Build an adaptive interview-preparation system, not a fixed long report. Optimiz
 
 ## Apply the Scope Boundary
 
-Use this skill when the requested outcome is a complete interview handbook or rehearsal plan. If the user only wants a tailored resume, cover letter, offer review, job search, or follow-up message, route to the relevant job-search skill. If both are requested, complete the application artifact first, then use the approved facts here.
+Use this skill when the requested outcome is a complete interview handbook or rehearsal plan. If the user only wants a tailored resume, cover letter, offer review, job search, or follow-up message, use a relevant installed job-search skill when available; otherwise explain the scope boundary briefly. If both are requested, complete the application artifact first, then use the approved facts here.
 
 ## Gate the Inputs
 
@@ -23,6 +23,18 @@ Locate:
 Treat the JD and candidate evidence as critical. If either is absent and cannot be located, ask one concise question and pause the full handbook. Do not construct candidate stories from assumptions.
 
 Treat interview time and round as important but non-blocking. If absent, use Standard mode and Hiring Manager round, then label both assumptions. Follow the user's language unless asked otherwise. Use Markdown unless the user explicitly requests a connected document service.
+
+## Adapt to the Host
+
+Run on Codex, WorkBuddy, or another host without assuming a specific invocation syntax or tool name. Inspect the capabilities available in the current session and use this fallback order:
+
+1. **Candidate files:** read attached PDF, Word, image, Markdown, or text files with the host's available file tools. If a critical file cannot be parsed, ask for extracted text instead of guessing.
+2. **Company research:** use web access when current company facts materially affect the answer. If browsing is unavailable, analyze the JD and supplied materials, label current company facts `Unverified-current`, lower STARS confidence, and list the facts to verify.
+3. **Publication:** publish through the connected service requested by the user when that connector exists. Otherwise deliver a complete Markdown file or response that can be pasted into Notion, Tencent Docs, Word, or another editor without restructuring.
+4. **Validation:** resolve `scripts/validate_pack.py` relative to this `SKILL.md`, not relative to the conversation workspace. Run it with Python 3 when shell execution is available. If Python or shell execution is unavailable, perform the equivalent manual checks from `references/quality-checklist.md` and disclose that automated validation did not run.
+5. **Unsupported integrations:** preserve the completed handbook locally or in the response and give concise manual publication steps. Do not block the analysis solely because a connector is missing.
+
+Do not require `$prepare-interview-pack`, slash commands, `$ARGUMENTS`, Codex-specific agents, or any other host-specific invocation mechanism. Natural-language requests are sufficient.
 
 ## Route Before Analyzing
 
@@ -137,10 +149,10 @@ Read [references/output-template.md](references/output-template.md) and [referen
 
 Read [references/quality-checklist.md](references/quality-checklist.md) before delivery.
 
-Before delivery or publication, run `python3 scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep>`. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant; never claim the artifact passed if the validator did not run successfully.
+Before delivery or publication, run `python3 <skill-directory>/scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep>` when shell execution is available. Resolve `<skill-directory>` from the installed skill location; do not assume the current working directory. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant. When automated validation is unavailable, complete the manual checklist and state that the script did not run. Never claim an automated pass unless the validator ran successfully.
 
-When the user explicitly requests Notion, use the available Notion knowledge-capture workflow. Search and fetch before writing. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, fetch the result again, and return the page link.
+When the user explicitly requests a connected document service, use the host's available publishing or knowledge-capture capability. Search and fetch before writing when the service supports it. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, read the result back when possible, and return the page or file link.
 
-Otherwise deliver finished Markdown that can be pasted into Notion without restructuring.
+Otherwise deliver finished Markdown that can be pasted into a document editor without restructuring.
 
 Lead with the immediate P0 rehearsal order. End with `Rehearse now`, `Review later`, and `Verify before speaking`.

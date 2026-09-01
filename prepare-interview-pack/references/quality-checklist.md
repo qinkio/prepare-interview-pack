@@ -65,8 +65,8 @@ Complete this check before delivery or publication.
 ## Publication
 
 - Only mode-required sections are included, in standard order.
-- Existing unrelated Notion content and approved facts are preserved.
+- Existing unrelated content in the destination document and approved facts are preserved.
 - The page includes a last-updated date and no duplicated standard headings.
-- The published page is fetched again and checked.
+- The published page is fetched again and checked when the connected service supports read-back.
 - The handoff includes the page or file link and immediate P0 priority.
-- `scripts/validate_pack.py` completed successfully for the selected mode, or any inability to run it was disclosed.
+- The validator was resolved from the installed skill directory and completed successfully for the selected mode, or automated validation was unavailable and the manual checklist plus disclosure was provided.
