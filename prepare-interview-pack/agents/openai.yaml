@@ -1,0 +1,4 @@
+interface:
+  display_name: "面试准备文档"
+  short_description: "生成有证据、可直接演练的完整面试作战手册"
+  default_prompt: "Use $prepare-interview-pack with this JD, my resume, career evidence, interview time, and round to create a recruiter-screened Battle Card plus a complete spoken-answer handbook."
