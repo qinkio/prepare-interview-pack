@@ -2,6 +2,12 @@
 
 Select sections by mode. Preserve this order for included sections.
 
+Maintain a strict layer boundary throughout the artifact:
+
+- **Speakable layer:** introductions, project scripts, question answers, transitions, stop sentences, and culture-fit phrases. Use natural first-person language only. Do not mention source provenance or internal claim statuses.
+- **Memory layer:** fact anchors, follow-up prompts, metric definitions, and ownership boundaries. Keep these outside the spoken block.
+- **Analysis layer:** source pointers, claim statuses, conflicts, and verification notes. Keep these in the evidence map, verification list, or final claim card.
+
 ## 0. Battle Card
 
 Keep this first layer independently usable under time pressure. Target three to five pages in normal Markdown rendering.
@@ -16,7 +22,11 @@ Keep this first layer independently usable under time pressure. Target three to 
 - Three interviewer questions
 - Five-line final fact and prohibition card
 
+Write every complete spoken passage as a Markdown blockquote so the validator can distinguish speech from notes and analysis.
+
 Do not place company research, competency tables, or long warnings between the introduction and story cards.
+
+The Battle Card remains part of the full handbook. A separate 30-minute rapid-review card is a smaller companion artifact; use [rapid-review-card.md](rapid-review-card.md) only when its trigger conditions apply.
 
 ## 1. Interview Snapshot
 

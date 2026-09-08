@@ -50,6 +50,39 @@ def count_interviewer_questions(text: str) -> int:
     return len(re.findall(r"^\s*\d+[.、．]\s+", target, re.M)) if target else 0
 
 
+def find_spoken_provenance_leaks(text: str) -> list[tuple[int, str]]:
+    """Find analyst-facing provenance or status language inside blockquoted speech."""
+    patterns = [
+        r"简历(?:中|里)?(?:记录|显示|写着|能确认)",
+        r"(?:根据|按照)(?:我的)?简历",
+        r"(?:工作)?资料(?:中)?(?:记录|显示|表明|证明|能证明)",
+        r"(?:材料|文档)(?:中)?(?:记录|显示|表明|证明)",
+        r"现有简历",
+        r"`(?:Verified|Candidate-confirmed|Derived-safe|Confirm|Conflict|Inference|Do not use)`",
+    ]
+    combined = re.compile("|".join(f"(?:{pattern})" for pattern in patterns), re.I)
+    leaks: list[tuple[int, str]] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if re.match(r"^\s*>", line) and combined.search(line):
+            leaks.append((line_number, line.lstrip("> ").strip()))
+    return leaks
+
+
+def find_duplicate_major_headings(text: str) -> list[str]:
+    """Return repeated level-one or level-two headings after light normalization."""
+    seen: dict[str, int] = {}
+    duplicates: list[str] = []
+    for line in text.splitlines():
+        match = re.match(r"^(#{1,2})\s+(.+)$", line)
+        if not match:
+            continue
+        heading = re.sub(r"\s*\{[^}]+\}\s*$", "", match.group(2)).strip().casefold()
+        seen[heading] = seen.get(heading, 0) + 1
+        if seen[heading] == 2:
+            duplicates.append(match.group(2).strip())
+    return duplicates
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("handbook", type=Path)
@@ -64,6 +97,21 @@ def main() -> int:
     text = args.handbook.read_text(encoding="utf-8")
     errors: list[str] = []
     warnings: list[str] = []
+
+    provenance_leaks = find_spoken_provenance_leaks(text)
+    if provenance_leaks:
+        preview = "; ".join(
+            f"line {line_number}: {line[:90]}" for line_number, line in provenance_leaks[:5]
+        )
+        errors.append(
+            f"{len(provenance_leaks)} spoken passage(s) expose source provenance or claim status; {preview}"
+        )
+
+    duplicate_headings = find_duplicate_major_headings(text)
+    if duplicate_headings:
+        errors.append(
+            "duplicate major heading(s) should be merged: " + ", ".join(duplicate_headings)
+        )
 
     required = {
         "Battle Card or P0 layer": [r"battle card", r"作战卡", r"^#\s*P0", r"^##\s*P0"],

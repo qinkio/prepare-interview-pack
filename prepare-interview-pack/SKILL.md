@@ -46,6 +46,8 @@ Read [references/routing-and-scoring.md](references/routing-and-scoring.md), the
 
 Also select the interview-round lens: HR, Hiring Manager, Cross-functional, Final, or Mixed/Unknown. Let the user override either selection. Use the mode to change rehearsal priority and research depth, not to remove the core answer library.
 
+When the user identifies an earlier handbook as a stronger reference or asks for a comparison, read the actual reference artifacts before drafting. Compare P0 discoverability, role specificity, spoken naturalness, evidence boundaries, useful depth, total length, and duplication. Reuse structural strengths, not role-specific claims. A newer handbook must not become harder to rehearse merely because it contains more analysis.
+
 ## Build the Evidence Ledger
 
 Read all relevant candidate sources before drafting. Record each material claim with project, period, exact candidate role, actions, metric definition, baseline, result, denominator, timeframe, ownership scope, and source pointer.
@@ -68,6 +70,8 @@ Assign one status to every claim:
 - `Do not use`: unsupported or misleading.
 
 Use `Verified` for every numerical result, historical ownership claim, employer fact, and past business outcome in speaking scripts. Use `Candidate-confirmed` for personal motivation and qualitative background. Use `Derived-safe` only for clearly framed judgment, transferable method, or future action. Put `Confirm`, `Conflict`, and unsupported `Inference` items in a separate verification list. Never convert a team result into personal ownership. Distinguish owned, co-owned, participated, and inherited work.
+
+Evidence status and source provenance are analyst-facing metadata. A supported claim may enter a speaking script, but the script must state the experience directly in the candidate's first person; it must never say that a resume, document, work asset, or evidence record proves or records the claim. If a claim is not safe without citing its source, exclude it from the speaking script and place it in the verification list.
 
 ## Run the Recruiter First-Impression Lens
 
@@ -122,6 +126,15 @@ Create a one-line positioning statement plus 60-second and 90-second introductio
 
 Follow the duration guidance in [references/routing-and-scoring.md](references/routing-and-scoring.md). Prefer short sentences and natural transitions. Mirror the candidate's normal vocabulary when evidence of their speaking style exists. Keep written analysis separate from words intended to be spoken.
 
+Treat introductions, project scripts, complete question answers, transitions, stop sentences, and culture-fit phrases as candidate-facing speech. In those passages:
+
+- Convert supported facts into direct first-person language, such as `我推动系统使用率从 15% 提升到 100%`.
+- Never expose provenance or workflow labels such as `简历记录`, `简历中显示`, `根据简历`, `工作资料证明`, `Verified`, or `Confirm`.
+- Express boundaries as ownership, metric, period, or domain limits, not as commentary about what the resume contains.
+- Keep evidence anchors outside the spoken passage. Make them compact fact reminders; place source pointers and claim statuses only in the analysis appendix or final claim card.
+
+After drafting, read every candidate-facing passage as if the candidate were saying it aloud. Rewrite any sentence that sounds like an analyst, recruiter, editor, or document narrator.
+
 Generate at least 10–12 high-probability questions in every mode. Write a complete, natural spoken answer for every core question; add bullets only as a memory aid after the script. For the five P0 questions, also include an evidence anchor, the most likely follow-up, and a stop sentence or safe boundary. For remaining P1 questions, a complete answer plus one-line memory headline is sufficient unless the risk is material. Generate questions according to the round lens:
 
 - HR: motivation, stability, compensation, transitions, and baseline fit.
@@ -147,11 +160,13 @@ Provide a self-rehearsal scorecard for relevance, clarity, credibility, ownershi
 
 Read [references/output-template.md](references/output-template.md) and [references/gold-quality-standard.md](references/gold-quality-standard.md). Produce a two-layer artifact: a compact Battle Card first, followed by the complete answer library and analysis appendix. Keep the core spoken-answer sections complete in every mode. In Sprint mode, make the Battle Card independently usable, mark what to rehearse first, and compress analysis appendices instead of deleting answers.
 
+Read [references/rapid-review-card.md](references/rapid-review-card.md) when the user asks for a last-minute card, the interview is within 24 hours, or the complete handbook is too long to use comfortably in one sitting. Produce the rapid-review card as a companion, never as a replacement for the complete answer library. Run `python3 <skill-directory>/scripts/validate_rapid_card.py <card.md>` when shell execution is available; otherwise complete the equivalent manual checks and disclose that automated validation did not run.
+
 Read [references/quality-checklist.md](references/quality-checklist.md) before delivery.
 
 Before delivery or publication, run `python3 <skill-directory>/scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep>` when shell execution is available. Resolve `<skill-directory>` from the installed skill location; do not assume the current working directory. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant. When automated validation is unavailable, complete the manual checklist and state that the script did not run. Never claim an automated pass unless the validator ran successfully.
 
-When the user explicitly requests a connected document service, use the host's available publishing or knowledge-capture capability. Search and fetch before writing when the service supports it. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, read the result back when possible, and return the page or file link.
+When the user explicitly requests a connected document service, use the host's available publishing or knowledge-capture capability. Search exact role and artifact titles before writing when the service supports it. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, read the result back when possible, and return the page or file link. If a rapid-review card is required, create or update it as a child or clearly related document, add a prominent link near the top of the full handbook when supported, and read both artifacts back. Verify required sections, link resolution, truncation, unknown blocks, and spoken-language provenance leaks when the host exposes those signals.
 
 Otherwise deliver finished Markdown that can be pasted into a document editor without restructuring.
 

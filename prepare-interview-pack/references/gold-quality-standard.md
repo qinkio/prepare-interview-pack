@@ -9,6 +9,7 @@ Use this as the acceptance standard for a finished interview handbook.
 - Write at least ten to twelve complete high-probability answers.
 - Place memory bullets after scripts, never instead of scripts.
 - Add a transition into each project, a stop sentence, and optional expansion directions.
+- Make every spoken passage sound natural when read aloud in the candidate's first person; source provenance and internal claim statuses never appear in it.
 
 ## Role Translation
 
@@ -48,3 +49,4 @@ Reject and revise the handbook when any condition is true:
 - A resume is available but the handbook never explains the recruiter's first impression or top validation risks.
 - Company or brand identity is ambiguous but the handbook presents brand-specific conclusions as confirmed.
 - The document is analytically correct but cannot be practiced aloud as written.
+- A spoken passage says that a resume, document, work asset, or evidence status records, proves, or confirms the candidate's own experience.
