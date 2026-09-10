@@ -14,14 +14,22 @@ Complete this check before delivery or publication.
 
 - A JD and candidate evidence source were actually read.
 - Every material claim has a status and source pointer.
-- Every numerical result, historical ownership claim, and past business outcome in speaking scripts is Verified.
-- Candidate-confirmed statements are limited to qualitative personal facts and motivations.
+- Every numerical result, historical ownership claim, and past business outcome in speaking scripts is either documentary `Verified` or an eligible `Candidate-confirmed` claim from the approved career vault, with metric and ownership boundaries preserved.
+- Candidate-confirmed claims preserve the exact user-approved boundary; they may include eligible historical metrics when period, population, calculation, ownership, and publication permission are sufficient for the wording used.
 - Derived-safe statements are framed as methods, interpretations, or future actions rather than historical results.
 - Ownership is labeled as owned, co-owned, participated, or inherited.
 - Team outcomes are not presented as personal outcomes.
 - Metrics retain unit, definition, timeframe, denominator, and ownership scope when relevant.
 - Conflicts, inferences, and unsupported claims are separated from speakable content.
 - Source provenance and internal claim statuses remain in the analysis or verification layer, never in candidate-facing speech.
+
+## Resume Project Coverage
+
+- Every named project and recent initiative visible on the supplied resume appears in the coverage ledger.
+- Every listed project has an explicit `P0`, `P1`, `P2`, or `Excluded` disposition.
+- Every `Excluded` project has a concrete reason tied to relevance, duplication, prohibition, or scope.
+- Incomplete metrics narrow the project's result language; they do not cause the project itself to disappear.
+- Each P0 project has a complete spoken story, and each P1 project has a safe 60–90 second answer.
 
 ## Analysis Integrity
 
@@ -75,10 +83,10 @@ Complete this check before delivery or publication.
 ## Publication
 
 - Only mode-required sections are included, in standard order.
-- Existing unrelated content in the destination document and approved facts are preserved.
+- Existing unrelated Notion content and approved facts are preserved.
 - The page includes a last-updated date and no duplicated standard headings.
-- The published page is fetched again and checked when the connected service supports read-back.
-- Published pages have no truncation or unknown blocks that hide required material when the host exposes those signals.
-- A rapid-review companion has a prominent working link near the top of the full handbook when the publishing service supports related pages.
+- The published page is fetched again and checked.
+- Published Notion pages have no truncation or unknown blocks that hide required material.
+- A Notion rapid-review child page has a prominent working link near the top of the full handbook.
 - The handoff includes the page or file link and immediate P0 priority.
-- The validator was resolved from the installed skill directory and completed successfully for the selected mode, or automated validation was unavailable and the manual checklist plus disclosure was provided.
+- `scripts/validate_pack.py` completed successfully for the selected mode, or any inability to run it was disclosed.

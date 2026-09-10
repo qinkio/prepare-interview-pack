@@ -83,10 +83,68 @@ def find_duplicate_major_headings(text: str) -> list[str]:
     return duplicates
 
 
+def load_resume_projects(path: Path) -> list[tuple[str, list[str]]]:
+    """Load resume project names from JSON or a one-project-per-line text file."""
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        return []
+    if path.suffix.lower() == ".json":
+        data = json.loads(raw)
+        if isinstance(data, dict):
+            data = data.get("projects", [])
+        if not isinstance(data, list):
+            raise ValueError("resume project manifest JSON must be a list or contain a projects list")
+        projects: list[tuple[str, list[str]]] = []
+        for item in data:
+            if isinstance(item, str):
+                projects.append((item.strip(), []))
+            elif isinstance(item, dict) and isinstance(item.get("name"), str):
+                aliases = item.get("aliases", [])
+                if not isinstance(aliases, list) or not all(isinstance(alias, str) for alias in aliases):
+                    raise ValueError("each project aliases field must be a list of strings")
+                projects.append((item["name"].strip(), [alias.strip() for alias in aliases]))
+            else:
+                raise ValueError("each resume project must be a string or an object with name")
+        return [(name, aliases) for name, aliases in projects if name]
+    return [(line.strip(), []) for line in raw.splitlines() if line.strip() and not line.lstrip().startswith("#")]
+
+
+def validate_resume_project_coverage(
+    text: str, projects: list[tuple[str, list[str]]]
+) -> tuple[list[str], int]:
+    """Require every resume project to have an explicit disposition in the coverage ledger."""
+    target = section(
+        text,
+        [r"简历项目.*(?:覆盖|清单|分层)", r"resume.*project.*coverage", r"project coverage ledger"],
+    )
+    if not target:
+        return ["missing resume project coverage ledger"], 0
+
+    disposition = re.compile(r"\bP[012]\b|\bExcluded\b|排除", re.I)
+    lines = target.splitlines()
+    errors: list[str] = []
+    covered = 0
+    for name, aliases in projects:
+        candidates = [name, *aliases]
+        matching = [line for line in lines if any(candidate and candidate.casefold() in line.casefold() for candidate in candidates)]
+        if not matching:
+            errors.append(f"resume project missing from coverage ledger: {name}")
+        elif not any(disposition.search(line) for line in matching):
+            errors.append(f"resume project lacks P0/P1/P2/Excluded disposition: {name}")
+        else:
+            covered += 1
+    return errors, covered
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("handbook", type=Path)
     parser.add_argument("--mode", choices=["sprint", "standard", "deep"], default="standard")
+    parser.add_argument(
+        "--resume-projects",
+        type=Path,
+        help="JSON manifest or one-project-per-line text file for resume project coverage checks",
+    )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
@@ -97,6 +155,24 @@ def main() -> int:
     text = args.handbook.read_text(encoding="utf-8")
     errors: list[str] = []
     warnings: list[str] = []
+    resume_project_count = 0
+    resume_project_covered = 0
+
+    if args.resume_projects:
+        if not args.resume_projects.is_file():
+            errors.append(f"resume project manifest not found: {args.resume_projects}")
+        else:
+            try:
+                resume_projects = load_resume_projects(args.resume_projects)
+                resume_project_count = len(resume_projects)
+                coverage_errors, resume_project_covered = validate_resume_project_coverage(
+                    text, resume_projects
+                )
+                errors.extend(coverage_errors)
+                if not resume_projects:
+                    errors.append("resume project manifest contains no projects")
+            except (ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"invalid resume project manifest: {exc}")
 
     provenance_leaks = find_spoken_provenance_leaks(text)
     if provenance_leaks:
@@ -167,6 +243,8 @@ def main() -> int:
         "passed": not errors,
         "question_count": question_count,
         "interviewer_question_count": interviewer_count,
+        "resume_project_count": resume_project_count,
+        "resume_project_covered": resume_project_covered,
         "errors": errors,
         "warnings": warnings,
     }
@@ -179,6 +257,8 @@ def main() -> int:
         for item in warnings:
             print(f"WARNING: {item}")
         print(f"Questions: {question_count}; interviewer questions: {interviewer_count}")
+        if args.resume_projects:
+            print(f"Resume projects: {resume_project_covered}/{resume_project_count} covered")
     return 0 if not errors else 1
 
 

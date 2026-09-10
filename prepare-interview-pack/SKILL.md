@@ -1,6 +1,6 @@
 ---
 name: prepare-interview-pack
-description: "Create an end-to-end, evidence-backed interview handbook and rehearsal plan from a JD, resume, career assets, interview time, and interview round. Use when users ask for 面试准备、JD拆解、面试手册、自我介绍、高频问题、项目故事、模拟面试, recruiter screening, competency ranking, experience mapping, gap answers, memorization priorities, or document publication. Do not use for standalone resume rewriting, cover letters, offer evaluation, job discovery, or post-interview messages."
+description: "Create an end-to-end, evidence-backed interview handbook and rehearsal plan from an active JD, resume, career assets, interview time, and interview round. Use for full interview preparation: recruiter first-impression screening, JD diagnosis, competency ranking, experience mapping, self-introductions, project stories, predicted questions, gap answers, memorization priorities, mock follow-ups, and Notion or Markdown publication. Do not use for resume rewriting, cover letters, offer evaluation, job discovery, or post-interview messages; use the relevant job-search skill for those tasks."
 ---
 
 # Prepare Interview Pack
@@ -9,7 +9,7 @@ Build an adaptive interview-preparation system, not a fixed long report. Optimiz
 
 ## Apply the Scope Boundary
 
-Use this skill when the requested outcome is a complete interview handbook or rehearsal plan. If the user only wants a tailored resume, cover letter, offer review, job search, or follow-up message, use a relevant installed job-search skill when available; otherwise explain the scope boundary briefly. If both are requested, complete the application artifact first, then use the approved facts here.
+Use this skill when the requested outcome is a complete interview handbook or rehearsal plan. If the user only wants a tailored resume, cover letter, offer review, job search, or follow-up message, route to the relevant job-search skill. If both are requested, complete the application artifact first, then use the approved facts here.
 
 ## Gate the Inputs
 
@@ -61,15 +61,24 @@ Apply this source priority:
 
 Assign one status to every claim:
 
-- `Verified`: supported and safe to speak.
-- `Candidate-confirmed`: a qualitative personal fact, preference, motivation, or working style explicitly confirmed by the candidate but not necessarily documented.
+- `Verified`: supported by documentary evidence and safe to speak.
+- `Candidate-confirmed`: explicitly confirmed by the candidate and safe to speak within the confirmed metric, period, population, ownership, and publication boundaries. This may include historical numerical results when the approved career vault records them as `user-confirmed`.
 - `Derived-safe`: a conservative method or interpretation derived from verified evidence; safe as analysis or future approach, not as a historical result.
 - `Confirm`: plausible but requires candidate confirmation.
 - `Conflict`: sources disagree.
 - `Inference`: analysis rather than candidate fact.
 - `Do not use`: unsupported or misleading.
 
-Use `Verified` for every numerical result, historical ownership claim, employer fact, and past business outcome in speaking scripts. Use `Candidate-confirmed` for personal motivation and qualitative background. Use `Derived-safe` only for clearly framed judgment, transferable method, or future action. Put `Confirm`, `Conflict`, and unsupported `Inference` items in a separate verification list. Never convert a team result into personal ownership. Distinguish owned, co-owned, participated, and inherited work.
+Use `Verified` when documentary evidence supports the claim. A numerical result or historical ownership claim may instead be `Candidate-confirmed` when the candidate explicitly confirms it and its speaking boundary is complete enough to avoid a misleading comparison. Use `Derived-safe` only for clearly framed judgment, transferable method, or future action. Put `Confirm`, `Conflict`, and unsupported `Inference` items in a separate verification list. Never convert a team result into personal ownership. Distinguish owned, co-owned, participated, and inherited work.
+
+When a Career Proof v0.2 vault is available, treat a claim as eligible for a speaking script only when all of these are true:
+
+- `status` is `verified` or `user-confirmed`;
+- `publication_permission` permits the intended use, such as `application-only` for a targeted resume or interview;
+- there is no unresolved conflict affecting the statement;
+- the available period, population, calculation, and ownership fields are sufficient for the exact wording used.
+
+Map eligible `verified` claims to `Verified` and eligible `user-confirmed` claims to `Candidate-confirmed`. Do not downgrade an explicitly confirmed result value to `Confirm` merely because a finer detail such as the exact month remains optional. Put that missing detail in a refinement note. If populations differ across stages, state each stage separately rather than manufacturing a same-denominator trend. Claims with `not-approved` permission remain excluded even when their truth status is confirmed.
 
 Evidence status and source provenance are analyst-facing metadata. A supported claim may enter a speaking script, but the script must state the experience directly in the candidate's first person; it must never say that a resume, document, work asset, or evidence record proves or records the claim. If a claim is not safe without citing its source, exclude it from the speaking script and place it in the verification list.
 
@@ -84,6 +93,21 @@ When a complete resume is available, read [references/resume-screening-lens.md](
 - The questions and proof needed to resolve those risks in interview.
 
 Keep this diagnostic compact in the handbook. Do not rewrite the resume unless the user separately requests an application artifact. If only extracted text is available, label the result a content-order simulation; inspect the rendered first page when a PDF is available.
+
+## Enforce Resume Project Coverage
+
+When a complete resume is available, create a resume-project manifest before selecting stories. Include every named project, representative initiative, and recent project that an interviewer could point to on the resume. Do not limit the manifest to claims that already have complete metrics.
+
+For every manifest item, assign one explicit disposition:
+
+- `P0`: directly relevant to the JD or likely to be challenged in the interview; provide a complete spoken story.
+- `P1`: relevant secondary proof; provide a safe 60–90 second answer.
+- `P2`: background, gap-period, or lower-priority proof; retain a concise answer or fact boundary.
+- `Excluded`: omit only when genuinely irrelevant, duplicated, prohibited, or outside the requested interview scope; record the reason.
+
+Evidence quality changes what the candidate may claim, not whether a resume-listed project remains discoverable in the handbook. If a project has incomplete or conflicting result evidence, retain the project, write the strongest safe version using its verified role, judgment, and actions, and move only the unsafe result to the verification list. Never silently drop a resume project because its metric is `Confirm`, `Conflict`, or unavailable.
+
+Make the coverage ledger visible near the story-selection or requirement-to-evidence section. Before delivery, confirm that every manifest item appears with a P0, P1, P2, or Excluded disposition. When the validator is available, save the manifest as JSON or one project per line and pass it with `--resume-projects`.
 
 ## Decode the Role
 
@@ -108,7 +132,7 @@ Describe the dream candidate through a typical day, plain-language superpower, r
 
 ## Map Evidence and Select Stories
 
-Build a requirement-to-evidence map using `Strong`, `Transferable`, or `Gap`. Cite the exact project and verified claim behind each match.
+Build a requirement-to-evidence map using `Strong`, `Transferable`, or `Gap`. Cite the exact project and eligible approved claim behind each match.
 
 Score candidate stories with the rubric in [references/routing-and-scoring.md](references/routing-and-scoring.md), then select:
 
@@ -122,13 +146,13 @@ Frame domain-adjacent experience as transferable method only when the underlying
 
 ## Generate Spoken Answers
 
-Create a one-line positioning statement plus 60-second and 90-second introductions in every mode. Add a 30-second version when HR screening is likely. Structure project stories as conclusion → context → exact role → key judgment → actions → verified result → transfer to the target role.
+Create a one-line positioning statement plus 60-second and 90-second introductions in every mode. Add a 30-second version when HR screening is likely. Structure project stories as conclusion → context → exact role → key judgment → actions → eligible result → transfer to the target role.
 
 Follow the duration guidance in [references/routing-and-scoring.md](references/routing-and-scoring.md). Prefer short sentences and natural transitions. Mirror the candidate's normal vocabulary when evidence of their speaking style exists. Keep written analysis separate from words intended to be spoken.
 
 Treat introductions, project scripts, complete question answers, transitions, stop sentences, and culture-fit phrases as candidate-facing speech. In those passages:
 
-- Convert supported facts into direct first-person language, such as `我推动系统使用率从 15% 提升到 100%`.
+- Convert supported facts into direct first-person language. Preserve the actual metric boundary; for example, say `项目初期客户使用率为 15%，后期全量推广阶段整体覆盖率达到 100%` when the stages or populations differ.
 - Never expose provenance or workflow labels such as `简历记录`, `简历中显示`, `根据简历`, `工作资料证明`, `Verified`, or `Confirm`.
 - Express boundaries as ownership, metric, period, or domain limits, not as commentary about what the resume contains.
 - Keep evidence anchors outside the spoken passage. Make them compact fact reminders; place source pointers and claim statuses only in the analysis appendix or final claim card.
@@ -164,7 +188,7 @@ Read [references/rapid-review-card.md](references/rapid-review-card.md) when the
 
 Read [references/quality-checklist.md](references/quality-checklist.md) before delivery.
 
-Before delivery or publication, run `python3 <skill-directory>/scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep>` when shell execution is available. Resolve `<skill-directory>` from the installed skill location; do not assume the current working directory. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant. When automated validation is unavailable, complete the manual checklist and state that the script did not run. Never claim an automated pass unless the validator ran successfully.
+Before delivery or publication, run `python3 <skill-directory>/scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep>` when shell execution is available. When a complete resume was read, also pass `--resume-projects <manifest.json|manifest.txt>`. Resolve `<skill-directory>` from the installed skill location; do not assume the current working directory. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant. When automated validation is unavailable, complete the manual checklist and state that the script did not run. Never claim an automated pass unless the validator ran successfully.
 
 When the user explicitly requests a connected document service, use the host's available publishing or knowledge-capture capability. Search exact role and artifact titles before writing when the service supports it. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, read the result back when possible, and return the page or file link. If a rapid-review card is required, create or update it as a child or clearly related document, add a prominent link near the top of the full handbook when supported, and read both artifacts back. Verify required sections, link resolution, truncation, unknown blocks, and spoken-language provenance leaks when the host exposes those signals.
 

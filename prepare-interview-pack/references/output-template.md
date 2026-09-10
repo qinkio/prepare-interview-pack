@@ -16,7 +16,7 @@ Keep this first layer independently usable under time pressure. Target three to 
 - Recruiter first impression and three validation risks
 - One-line role and candidate positioning
 - Complete 60-second introduction
-- Primary and backup story memory cards: conclusion, three actions, verified result, boundary
+- Primary and backup story memory cards: conclusion, three actions, eligible verified or candidate-confirmed result, boundary
 - Main gap answer
 - Five P0 questions and memory headlines
 - Three interviewer questions
@@ -97,9 +97,13 @@ Include this section in every mode. Keep it compact in Sprint mode.
 
 ## 7. Requirement-to-Evidence Map
 
-Use columns: JD requirement, match level, project, exact role, verified result, claim status, gap or risk, answer strategy.
+Use columns: JD requirement, match level, project, exact role, eligible result, claim status, gap or risk, answer strategy.
 
 Name the primary, backup, and optional risk story.
+
+### Resume Project Coverage Ledger
+
+When a complete resume is available, list every named project or recent initiative from it. Use columns: resume project, JD relevance, disposition (`P0`, `P1`, `P2`, or `Excluded`), safe speaking scope, result limitation, and handbook location. Evidence uncertainty may narrow the result language but must not silently remove the project.
 
 ## 8. Self-Introduction
 
@@ -117,7 +121,7 @@ For each selected story include:
 3. Exact candidate role
 4. Key judgment or tradeoff
 5. Actions
-6. Verified results
+6. Eligible verified or candidate-confirmed results; otherwise state the result limitation without dropping the project
 7. Transfer to the target role
 8. Three-layer follow-up prompts
 9. Factual anchors and overclaim warning
@@ -152,7 +156,7 @@ Score relevance, clarity, credibility, ownership precision, and spoken delivery.
 Separate:
 
 - Verified and safe to speak
-- Candidate-confirmed qualitative facts
+- Candidate-confirmed facts, including eligible user-confirmed metrics with their speaking boundaries
 - Derived-safe methods or future approaches
 - Confirm before speaking
 - Conflicts to resolve
