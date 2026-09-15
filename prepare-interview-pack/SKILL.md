@@ -5,6 +5,11 @@ description: "Create an end-to-end, evidence-backed interview handbook and rehea
 
 # Prepare Interview Pack
 
+## Current local vault workflow
+
+Use the current career vault directly for local resume and interview tasks. Read [references/direct-vault-reading.md](references/direct-vault-reading.md) for the reading and update contract. A separate maintained evidence package is not required; exports are optional one-time transfer outputs. This direct-read mode supersedes export preferences elsewhere for local work.
+
+
 Build an adaptive interview-preparation system, not a fixed long report. Optimize for truthful claims, persuasive spoken delivery, and the candidate's remaining preparation time. Keep the answer library complete even when rehearsal time is short.
 
 ## Apply the Scope Boundary
@@ -23,18 +28,6 @@ Locate:
 Treat the JD and candidate evidence as critical. If either is absent and cannot be located, ask one concise question and pause the full handbook. Do not construct candidate stories from assumptions.
 
 Treat interview time and round as important but non-blocking. If absent, use Standard mode and Hiring Manager round, then label both assumptions. Follow the user's language unless asked otherwise. Use Markdown unless the user explicitly requests a connected document service.
-
-## Adapt to the Host
-
-Run on Codex, WorkBuddy, or another host without assuming a specific invocation syntax or tool name. Inspect the capabilities available in the current session and use this fallback order:
-
-1. **Candidate files:** read attached PDF, Word, image, Markdown, or text files with the host's available file tools. If a critical file cannot be parsed, ask for extracted text instead of guessing.
-2. **Company research:** use web access when current company facts materially affect the answer. If browsing is unavailable, analyze the JD and supplied materials, label current company facts `Unverified-current`, lower STARS confidence, and list the facts to verify.
-3. **Publication:** publish through the connected service requested by the user when that connector exists. Otherwise deliver a complete Markdown file or response that can be pasted into Notion, Tencent Docs, Word, or another editor without restructuring.
-4. **Validation:** resolve `scripts/validate_pack.py` relative to this `SKILL.md`, not relative to the conversation workspace. Run it with Python 3 when shell execution is available. If Python or shell execution is unavailable, perform the equivalent manual checks from `references/quality-checklist.md` and disclose that automated validation did not run.
-5. **Unsupported integrations:** preserve the completed handbook locally or in the response and give concise manual publication steps. Do not block the analysis solely because a connector is missing.
-
-Do not require `$prepare-interview-pack`, slash commands, `$ARGUMENTS`, Codex-specific agents, or any other host-specific invocation mechanism. Natural-language requests are sufficient.
 
 ## Route Before Analyzing
 
@@ -190,14 +183,14 @@ Provide a self-rehearsal scorecard for relevance, clarity, credibility, ownershi
 
 Read [references/output-template.md](references/output-template.md) and [references/gold-quality-standard.md](references/gold-quality-standard.md). Produce a two-layer artifact: a compact Battle Card first, followed by the complete answer library and analysis appendix. Keep the core spoken-answer sections complete in every mode. In Sprint mode, make the Battle Card independently usable, mark what to rehearse first, and compress analysis appendices instead of deleting answers.
 
-Read [references/rapid-review-card.md](references/rapid-review-card.md) when the user asks for a last-minute card, the interview is within 24 hours, or the complete handbook is too long to use comfortably in one sitting. Produce the rapid-review card as a companion, never as a replacement for the complete answer library. Run `python3 <skill-directory>/scripts/validate_rapid_card.py <card.md>` when shell execution is available; otherwise complete the equivalent manual checks and disclose that automated validation did not run.
+Read [references/rapid-review-card.md](references/rapid-review-card.md) when the user asks for a last-minute card, the interview is within 24 hours, or the complete handbook is too long to use comfortably in one sitting. Produce the rapid-review card as a companion, never as a replacement for the complete answer library. Run `python3 scripts/validate_rapid_card.py <card.md>` before delivery when the card is a local Markdown artifact.
 
 Read [references/quality-checklist.md](references/quality-checklist.md) before delivery.
 
-Before delivery or publication, run `python3 <skill-directory>/scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep> --company-research <company-research.json>` when shell execution is available. When a complete resume was read, also pass `--resume-projects <manifest.json|manifest.txt>`. Resolve `<skill-directory>` from the installed skill location; do not assume the current working directory. Report the structural result separately from `research_status`. `unavailable` or `provided-only` must never be presented as completed current public research; `searched-with-gaps` must disclose the gaps. The research ledger check verifies coverage and evidence pointers, not source truth or whether a tool actually executed; manually inspect source relevance, freshness, and consistency with the handbook. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant. When automated validation is unavailable, complete the manual checklist and state that the script did not run. Never claim an automated pass unless the validator ran successfully.
+Before delivery or publication, run `python3 scripts/validate_pack.py <handbook.md> --mode <sprint|standard|deep> --company-research <company-research.json>`. When a complete resume was read, also pass `--resume-projects <manifest.json|manifest.txt>`. Report the structural result separately from `research_status`. `unavailable` or `provided-only` must never be presented as completed current public research; `searched-with-gaps` must disclose the gaps. The research ledger check verifies coverage and evidence pointers, not source truth or whether a tool actually executed; manually inspect source relevance, freshness, and consistency with the handbook. Treat every reported error as a required revision. Review warnings explicitly and fix those that are relevant; never claim the artifact passed if the validator did not run successfully.
 
-When the user explicitly requests a connected document service, use the host's available publishing or knowledge-capture capability. Search exact role and artifact titles before writing when the service supports it. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, read the result back when possible, and return the page or file link. If a rapid-review card is required, create or update it as a child or clearly related document, add a prominent link near the top of the full handbook when supported, and read both artifacts back. Verify required sections, link resolution, truncation, unknown blocks, and spoken-language provenance leaks when the host exposes those signals.
+When the user explicitly requests Notion, use the available Notion knowledge-capture workflow. Search exact role and artifact titles before writing. Update the existing role page by section unless the user requests a new page. Preserve unrelated content and candidate-approved facts. Add a last-updated date, avoid duplicate headings, fetch the result again, and return the page link. If a rapid-review card is required, create or update it as a child of the full handbook, add a prominent link near the top of the parent, and fetch both pages again. Verify required sections, link resolution, truncation, unknown blocks, and spoken-language provenance leaks before handoff.
 
-Otherwise deliver finished Markdown that can be pasted into a document editor without restructuring.
+Otherwise deliver finished Markdown that can be pasted into Notion without restructuring.
 
 Lead with the immediate P0 rehearsal order. End with `Rehearse now`, `Review later`, and `Verify before speaking`.
