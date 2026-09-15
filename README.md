@@ -156,12 +156,18 @@ Skill 会为重要信息标记状态：
 
 数字结果、历史所有权和过去业务成果必须有文档证据，或由候选人在口径、周期、群体、贡献边界和发布权限完整的前提下明确确认。团队结果不会自动被包装成个人成果，相邻经验也不会被包装成直接经验。
 
+## 公司基础调研（所有模式）
+
+Sprint、Standard 和 Deep 首次准备都先核对公司名称、主体和品牌关系、规模与业务模式、近期动态及信息冲突，并把结论用于面试回答或反问。时间紧时压缩深度，不省略基础核验。
+
+研究记录保存为 `company-research.json`：包括实际查询、读取来源、访问日期、具体截图/段落定位和短摘录。发布与更新日期分开；搜不到事实、访问受限或用户明确禁止联网时如实记录，不编造结论。格式见 [研究规则与账本示例](prepare-interview-pack/references/company-research.md)。
+
 ## 自动检查
 
 生成 Markdown 手册后，可以运行：
 
 ```bash
-python3 prepare-interview-pack/scripts/validate_pack.py 面试手册.md --mode sprint --resume-projects 简历项目清单.json
+python3 prepare-interview-pack/scripts/validate_pack.py 面试手册.md --mode sprint --resume-projects 简历项目清单.json --company-research company-research.json
 ```
 
 生成独立速背卡后，可以运行：
@@ -170,10 +176,18 @@ python3 prepare-interview-pack/scripts/validate_pack.py 面试手册.md --mode s
 python3 prepare-interview-pack/scripts/validate_rapid_card.py 面试前30分钟速背卡.md
 ```
 
+检查输出把 `structural_passed` 与 `research_status` 分开。研究状态包括 `searched`、`searched-with-gaps`、`provided-only`、`unavailable` 和 `invalid`。只有受阻搜索的记录不能标为已搜索；合法例外允许继续准备，但结构通过不代表已完成当前公开调研或事实核验。
+
+匿名研究记录回归检查：
+
+```bash
+python3 prepare-interview-pack/scripts/test_company_research.py
+```
+
 检查器会验证：
 
 - 60 秒和 90 秒自我介绍；
-- 公司 STARS 地图；
+- 公司 STARS 地图与五项研究记录、证据定位、日期及引用完整性；
 - 主项目与备用项目；
 - 至少 10 道高概率问题；
 - 三个面试官反问；

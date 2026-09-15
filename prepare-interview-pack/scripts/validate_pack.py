@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 
@@ -136,6 +137,114 @@ def validate_resume_project_coverage(
     return errors, covered
 
 
+def validate_company_research(data: object) -> list[str]:
+    """Check substantive coverage and pointers, not factual truth or tool execution."""
+    errors: list[str] = []
+    if not isinstance(data, dict):
+        return ["company research must be a JSON object"]
+    def nonempty(value: object) -> bool:
+        return isinstance(value, str) and bool(value.strip())
+    def valid_date(value: object) -> bool:
+        try:
+            return isinstance(value, str) and date.fromisoformat(value).isoformat() == value
+        except ValueError:
+            return False
+    if not valid_date(data.get("checked_at")):
+        errors.append("company research checked_at must be an ISO date")
+    mode = data.get("mode")
+    if mode not in ("searched", "provided-only", "unavailable"):
+        errors.append("invalid company research mode")
+    elif mode != "searched" and not nonempty(data.get("exception_reason")):
+        errors.append("company research exception requires a concrete reason")
+    def records(key: str) -> dict:
+        items = data.get(key)
+        if not isinstance(items, list):
+            errors.append(f"company research {key} must be a list")
+            return {}
+        result = {}
+        for item in items:
+            if not isinstance(item, dict) or not nonempty(item.get("id")):
+                errors.append(f"invalid company research {key} record")
+                continue
+            if item["id"] in result:
+                errors.append(f"duplicate company research {key} id: {item['id']}")
+            result[item["id"]] = item
+        return result
+    sources, searches = records("sources"), records("searches")
+    def refs(item: dict, key: str, known: dict, label: str) -> list:
+        values = item.get(key)
+        if not isinstance(values, list) or not all(isinstance(v, str) for v in values):
+            errors.append(f"{label} {key} must be a list of IDs")
+            return []
+        for value in values:
+            if value not in known:
+                errors.append(f"{label} references unknown {key}: {value}")
+        return values
+    for sid, item in sources.items():
+        if not nonempty(item.get("pointer")) or not nonempty(item.get("kind")) or not valid_date(item.get("accessed_at")):
+            errors.append(f"company source {sid} requires pointer, kind and ISO accessed_at")
+        for field in ("published_at", "updated_at"):
+            if item.get(field) is not None and not valid_date(item[field]):
+                errors.append(f"company source {sid} {field} must be ISO date or null")
+        if any(item.get(field) is not None for field in ("published_at", "updated_at")) and not nonempty(item.get("date_evidence")):
+            errors.append(f"company source {sid} known date requires observed date label and location")
+    if mode == "searched" and not searches:
+        errors.append("searched company research contains no search attempts")
+    for qid, item in searches.items():
+        if not nonempty(item.get("query")) or item.get("outcome") not in ("read", "no-results", "blocked"):
+            errors.append(f"invalid company search {qid}")
+        linked = refs(item, "source_ids", sources, f"search {qid}")
+        if item.get("outcome") == "read" and not linked:
+            errors.append(f"read search {qid} has no inspected source")
+    if mode == "searched" and searches and all(item.get("outcome") == "blocked" for item in searches.values()):
+        errors.append("all company searches blocked; use unavailable mode and disclose the access failure")
+    topics = data.get("topics")
+    if not isinstance(topics, dict):
+        return errors + ["company research topics must be an object"]
+    for name in ("identity", "scale_and_model", "recent_developments", "conflicts", "interview_implications"):
+        item = topics.get(name)
+        if not isinstance(item, dict):
+            errors.append(f"missing company research topic: {name}")
+            continue
+        if not nonempty(item.get("finding")) or item.get("status") not in ("supported", "partial", "not-found", "blocked"):
+            errors.append(f"company topic {name} requires finding and valid status")
+        source_ids = refs(item, "source_ids", sources, f"topic {name}")
+        search_ids = refs(item, "search_ids", searches, f"topic {name}")
+        evidence = item.get("evidence")
+        if not isinstance(evidence, list):
+            errors.append(f"company topic {name} evidence must be a list")
+            evidence = []
+        for entry in evidence:
+            if not isinstance(entry, dict) or not nonempty(entry.get("locator")) or not nonempty(entry.get("excerpt")):
+                errors.append(f"company topic {name} evidence requires precise locator and observed excerpt")
+            elif entry.get("source_id") not in source_ids:
+                errors.append(f"company topic {name} evidence must reference a listed topic source")
+        if item.get("status") in ("supported", "partial") and not evidence:
+            errors.append(f"company topic {name} claims support without precise evidence")
+        if item.get("status") == "not-found" and search_ids and all(searches.get(q, {}).get("outcome") == "blocked" for q in search_ids):
+            errors.append(f"company topic {name} is access-blocked, not a searched no-result finding")
+        if item.get("status") in ("supported", "partial") and not source_ids:
+            errors.append(f"company topic {name} claims support without a source")
+        if mode == "searched" and name != "interview_implications" and not search_ids:
+            errors.append(f"company topic {name} has no relevant search attempt")
+    return errors
+
+
+def company_research_status(data: object, invalid: bool = False) -> str:
+    """Describe recorded access/coverage, never imply independent fact verification."""
+    if invalid or not isinstance(data, dict):
+        return "invalid"
+    mode = data.get("mode")
+    if mode in ("provided-only", "unavailable"):
+        return mode
+    if mode != "searched":
+        return "invalid"
+    topics = data.get("topics", {})
+    if any(item.get("status") != "supported" for item in topics.values() if isinstance(item, dict)) or any(item.get("outcome") == "blocked" for item in data.get("searches", []) if isinstance(item, dict)):
+        return "searched-with-gaps"
+    return "searched"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("handbook", type=Path)
@@ -145,6 +254,7 @@ def main() -> int:
         type=Path,
         help="JSON manifest or one-project-per-line text file for resume project coverage checks",
     )
+    parser.add_argument("--company-research", type=Path, help="Required company research coverage ledger JSON")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
@@ -155,6 +265,19 @@ def main() -> int:
     text = args.handbook.read_text(encoding="utf-8")
     errors: list[str] = []
     warnings: list[str] = []
+    research_status = "invalid"
+    if not args.company_research:
+        errors.append("missing company research ledger; pass --company-research in every mode")
+    else:
+        try:
+            research_data = json.loads(args.company_research.read_text(encoding="utf-8"))
+            research_errors = validate_company_research(research_data)
+            errors.extend(research_errors)
+            research_status = company_research_status(research_data, bool(research_errors))
+            if research_status != "searched" and research_status != "invalid":
+                warnings.append(f"company research status: {research_status}; disclose gaps or exception separately from structural validity")
+        except (OSError, ValueError) as exc:
+            errors.append(f"invalid company research ledger: {exc}")
     resume_project_count = 0
     resume_project_covered = 0
 
@@ -241,6 +364,9 @@ def main() -> int:
         "file": str(args.handbook),
         "mode": args.mode,
         "passed": not errors,
+        "structural_passed": not errors,
+        "research_status": research_status,
+        "factual_verification": "not-assessed-by-script",
         "question_count": question_count,
         "interviewer_question_count": interviewer_count,
         "resume_project_count": resume_project_count,
@@ -251,7 +377,8 @@ def main() -> int:
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
-        print("PASS" if not errors else "FAIL")
+        print("STRUCTURE PASS" if not errors else "STRUCTURE FAIL")
+        print(f"Company research: {research_status}; factual verification not assessed by script")
         for item in errors:
             print(f"ERROR: {item}")
         for item in warnings:

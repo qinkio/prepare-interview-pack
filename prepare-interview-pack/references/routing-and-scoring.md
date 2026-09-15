@@ -2,6 +2,8 @@
 
 ## Output Mode
 
+Every mode completes the basic company verification in [company-research.md](company-research.md) before drafting company-specific conclusions. Sprint uses a small set of relevant sources and concise findings; Standard adds role-relevant comparisons; Deep expands history, competitors, and strategic context when useful. A short deadline never substitutes an empty company section for research. Honor explicit no-browsing instructions and document access failures or genuinely unavailable facts.
+
 ### Sprint — Under 24 Hours
 
 Produce the complete core answer library, but prioritize:
@@ -38,7 +40,7 @@ Produce the Sprint content plus:
 
 Produce the Standard content plus:
 
-- Current company research with authoritative sources.
+- Expanded company research with authoritative sources beyond the baseline required in every mode.
 - Secondary conflict, failure, or risk story.
 - Multiple-round question strategy.
 - Expanded domain primer.

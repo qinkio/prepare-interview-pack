@@ -79,6 +79,8 @@ Keep this compact; the detailed rubric belongs in the skill reference, not the c
 
 ## 5. Company and Role Map
 
+Summarize all five basic research topics from [company-research.md](company-research.md): findings or documented gaps, source links and access dates, material conflicts, and what they change about preparation. Distinguish sourced facts from inference. Keep the JSON research ledger in the local analysis artifacts; do not insert it into speaking scripts. Sprint compresses this section without skipping the searches.
+
 Include this section in every mode. Keep it compact in Sprint mode.
 
 - Identity boundary: recruiting entity, parent company, brand or business unit, and actual team or market

@@ -33,6 +33,15 @@ Complete this check before delivery or publication.
 
 ## Analysis Integrity
 
+- Basic company research was attempted in every mode, or an explicit no-browsing/access exception was recorded.
+- The exact company name was checked against the original source, including ambiguous image/OCR characters.
+- All five research topics have substantive findings or documented gaps; sources actually read have links or file pointers and access dates.
+- Material conflicts in entity, address, scale, financing, or brand ownership remain visible; copied secondary reports are not treated as independent corroboration.
+- Company findings change at least one relevant answer, priority, or interviewer question; speculative stage/culture claims stay labeled.
+- Supported research topics point to the exact image/block/paragraph with short observed excerpts; manual review confirms the excerpt and finding match that source.
+- Publication and update dates are separate, with observed date labels recorded; unknown dates remain null.
+- The research ledger passes `--company-research` validation and agrees with the handbook; report structural validity separately from research status and disclose access restrictions or gaps. A structural pass is not claimed as factual verification.
+
 - The recruiter first-impression diagnostic distinguishes HR and hiring-manager lenses.
 - The first-impression verdict is conditional on supplied evidence and does not pretend to know the real applicant pool.
 - Company identity is resolved across recruiting entity, parent, brand or business unit, and actual team when relevant.
